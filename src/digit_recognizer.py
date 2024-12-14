@@ -9,11 +9,14 @@ from torch.utils.data import DataLoader, TensorDataset
 import torch
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import seaborn as sns
 from sklearn.model_selection import train_test_split
 
-train = pd.read_csv("dataset/train.csv")
-test = pd.read_csv("dataset/test.csv")
+
+train = pd.read_csv("./dataset/train.csv")
+test = pd.read_csv("./dataset/test.csv")
+
 
 # 每张图像的像素为 28 * 28 像素，总共为 784 像素点
 train.head()
@@ -32,7 +35,7 @@ train.isnull().any().describe()
 # %%
 # 数字类别统计
 sns.countplot(x=train['label'])
-
+plt.show()
 # %%
 # 分割特征和标签
 train_labels = train["label"]
@@ -80,7 +83,7 @@ test_loader = DataLoader(test_tensor, batch_size=100, shuffle=False)
 plt.imshow(train.values[10].reshape(28, 28), cmap='gray')
 plt.axis("off")
 plt.title(str(train_labels.values[10]))
-
+plt.show()
 # %%
 # ----------------------------------------------------------------模型训练--------------------------------------------------------------------#
 
@@ -314,8 +317,9 @@ train_val(resnet_model, "resnet18")
 # %%
 # 可视化resnet18的损失值和准确率
 loss_acc_plot(train_losses, val_losses, train_accuracies, val_accuracies)
-
+plt.show()
 # %%
+# 创建CNN模型
 
 
 class CNNModel(nn.Module):
@@ -354,6 +358,55 @@ class CNNModel(nn.Module):
 
         return out
 
+# %%
+# 可视化CNN模型图
+
+
+def visualize_cnn_structure():
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    # Input layer
+    ax.text(0.1, 0.6, 'Input\n1@28*28', fontsize=12, ha='center')
+    input_rect = patches.Rectangle(
+        (0.05, 0.5), 0.1, 0.2, edgecolor='black', facecolor='gray', lw=1)
+    ax.add_patch(input_rect)
+
+    # Conv1
+    ax.text(0.35, 0.7, 'Conv 1\n16@24*24', fontsize=12, ha='center')
+    conv1_rect = patches.Rectangle(
+        (0.25, 0.5), 0.2, 0.3, edgecolor='orange', facecolor='orange', alpha=0.5, lw=1)
+    ax.add_patch(conv1_rect)
+
+    # Conv2
+    ax.text(0.6, 0.7, 'Conv 2\n32@8*8', fontsize=12, ha='center')
+    conv2_rect = patches.Rectangle(
+        (0.55, 0.5), 0.15, 0.3, edgecolor='red', facecolor='red', alpha=0.5, lw=1)
+    ax.add_patch(conv2_rect)
+
+    # Linear layer
+    ax.text(0.85, 0.6, 'Linear\n1*10', fontsize=12, ha='center')
+    linear_rect = patches.Rectangle(
+        (0.8, 0.55), 0.05, 0.1, edgecolor='purple', facecolor='purple', alpha=0.5, lw=1)
+    ax.add_patch(linear_rect)
+
+    # Arrows
+    ax.arrow(0.15, 0.6, 0.1, 0, head_width=0.03,
+             head_length=0.02, fc='black', ec='black')
+    ax.arrow(0.45, 0.6, 0.1, 0, head_width=0.03,
+             head_length=0.02, fc='black', ec='black')
+    ax.arrow(0.7, 0.6, 0.1, 0, head_width=0.03,
+             head_length=0.02, fc='black', ec='black')
+
+    # Layout adjustments
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis('off')
+    plt.title("CNN Architecture Visualization")
+    plt.show()
+
+
+# Call the function to visualize CNN structure
+visualize_cnn_structure()
 
 # %%
 cnn_model = CNNModel()
@@ -370,7 +423,7 @@ train_val(cnn_model, "cnn")
 # %%
 # 可视化CNN的损失值和准确率
 loss_acc_plot(train_losses, val_losses, train_accuracies, val_accuracies)
-
+plt.show()
 # %%
 # 创建FCNN模型
 

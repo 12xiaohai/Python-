@@ -487,7 +487,7 @@ train_val(fcnn_model, "fcnn")
 # %%
 # 可视化FCNN的损失值和准确率
 loss_acc_plot(train_losses, val_losses, train_accuracies, val_accuracies)
-
+plt.show()
 # %%
 warnings.filterwarnings('ignore')
 
@@ -564,7 +564,8 @@ for i in range(num_samples):
     ax.imshow(img, cmap='gray')
     ax.set_title(f"True: {incorrect_labels[i]}, Pred: {predicted_labels[i]}")
     ax.axis('off')
-
+plt.tight_layout()
+plt.show()
 # %%
 incorrect_images[1].shape
 
